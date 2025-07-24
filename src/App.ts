@@ -3,7 +3,8 @@ import { Server as HttpServer } from 'http';
 import cors from 'cors';
 import { readdirSync } from 'fs';
 import { join, extname } from 'path';
-import { getLogger } from './Infraestructure/Services/Logger';
+import { getLogger } from '@/infrastructure/utils/Logger';
+import { errorHandler } from '@/presentation/middlewares/errorHandler';
 
 const LOGGER = getLogger();
 
@@ -17,6 +18,7 @@ class App {
         this.setupMiddlewares();
         this.setupRoutes().then(() => {
             LOGGER.info('Rotas carregadas com sucesso');
+            this.express.use(errorHandler); 
         });
     }
 
@@ -28,7 +30,7 @@ class App {
 
     private async setupRoutes (): Promise<void> {
         const apiRouter = Router();
-        const routesPath = join(__dirname, 'Routes');
+        const routesPath = join(__dirname, 'presentation/routes');
 
         const routeFiles = readdirSync(routesPath).filter(file =>
             ['.ts', '.js'].includes(extname(file)) && !file.endsWith('.map')

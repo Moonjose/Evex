@@ -1,5 +1,5 @@
-import { getLogger } from './Infraestructure/Services/Logger';
-import { Repository } from './Infraestructure/Repositories/Repository';
+import { getLogger } from '@/infrastructure/utils/Logger';
+import { Repository } from '@/infrastructure/repositories/Repository';
 import App from './App';
 
 const PORT = process.env.PORT || 3000;
