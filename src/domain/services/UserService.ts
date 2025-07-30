@@ -1,7 +1,7 @@
 import UserRepository from '@/infrastructure/repositories/UserRepository';
-import { CreateUserDTO } from "@/domain/dtos/UserDTO";
+import { CreateUserDTO, UpdateUserDTO } from "@/domain/dtos/UserDTO";
 import { User } from '@/domain/entities/User';
-import { ConflictError, ValidationError } from '@/domain/errors/DomainErrors';
+import { ConflictError, ValidationError, NotFoundError } from '@/domain/errors/DomainErrors';
 
 export default class UserService {
     constructor(
@@ -24,5 +24,25 @@ export default class UserService {
 
     async getAll(): Promise<User[]> {
         return this.repository.findAll();
+    }
+
+    async delete(id: string): Promise<void> {
+        const user = await this.repository.delete(id);
+        if(!user) {
+            throw new NotFoundError('Usuário não encontrado');
+        }
+    }
+
+    async update(id: string, data: UpdateUserDTO): Promise<User> {
+        if (Object.keys(data).length === 0) {
+            throw new ValidationError('É necessário informar pelo menos um campo para atualização');
+        }
+        const updatedUser = await this.repository.update(id, data);
+
+        if (!updatedUser) {
+            throw new NotFoundError('Usuário não encontrado');
+        }
+
+        return updatedUser;
     }
 }

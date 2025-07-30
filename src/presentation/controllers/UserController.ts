@@ -15,4 +15,18 @@ export class UserController {
         const users = await userService.getAll();
         return res.status(200).json(users);
     }
+
+    static async delete(req: Request, res: Response) {
+        const { id } = req.params;
+        await userService.delete(id);
+        return res.status(204).send();
+    }
+
+    static async update(req: Request, res: Response) {
+        const { id } = req.params;
+        const data = req.body;
+
+        const updatedUser = await userService.update(id, data);
+        return res.status(200).json(updatedUser);
+    }
 }
